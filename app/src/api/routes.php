@@ -12,6 +12,8 @@ use toubilib\api\actions\ListerPraticiensAction;
 use toubilib\api\actions\ListerRendezVousAction;
 use toubilib\api\actions\ListerRendezVousActionID;  
 use toubilib\api\actions\NePasHonorerRendezVousAction;
+use toubilib\api\actions\RecherchePraticiensActionSpecialite;
+use toubilib\api\actions\RecherchePraticiensActionVille;
 use toubilib\api\middlewares\ValidationRendezVousMiddleware;
 use toubilib\api\actions\SigninAction;
 use toubilib\api\actions\RefreshTokenAction;
@@ -28,6 +30,9 @@ return function(\Slim\App $app): \Slim\App {
     // Praticiens
     $app->get('/praticiens', ListerPraticiensAction::class);
     $app->get('/praticiens/{id}', ListerPraticienIdAction::class);
+    $app->get('/praticiens/villes/{ville}', RecherchePraticiensActionVille::class);
+    $app->get('/praticiens/specialites/{specialite}', RecherchePraticiensActionSpecialite::class);
+
 
 
     $app->get('/praticiens/{id}/agenda', ConsulterAgendaAction::class)

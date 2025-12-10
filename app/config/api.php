@@ -12,6 +12,8 @@ use toubilib\api\actions\ListerPraticiensAction;
 use toubilib\api\actions\ListerRendezVousAction;
 use toubilib\api\actions\ListerRendezVousActionID;
 use toubilib\api\actions\NePasHonorerRendezVousAction;
+use toubilib\api\actions\RecherchePraticiensActionSpecialite;
+use toubilib\api\actions\RecherchePraticiensActionVille;
 use toubilib\core\application\ports\api\ServicePraticienInterface;
 use toubilib\core\application\ports\api\ServiceRendezVousInterface;
 use toubilib\api\actions\SigninAction;
@@ -96,6 +98,16 @@ return [
     ListerCreneauxOccAction::class => function ($c) {
         return new ListerCreneauxOccAction(
             $c->get(ServiceRendezVousInterface::class)
+        );
+    },
+    RecherchePraticiensActionVille::class => function ($c) {
+        return new RecherchePraticiensActionVille(
+            $c->get(ServicePraticienInterface::class)
+        );
+    },
+    RecherchePraticiensActionSpecialite::class => function ($c) {
+        return new RecherchePraticiensActionSpecialite(
+            $c->get(ServicePraticienInterface::class)
         );
     },
 ];
