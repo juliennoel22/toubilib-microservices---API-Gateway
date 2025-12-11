@@ -26,6 +26,11 @@ return function(\Slim\App $app): \Slim\App {
     // Auth routes
     $app->post('/auth/signin', SigninAction::class);
     $app->post('/auth/refresh', RefreshTokenAction::class);
+
+    $app->get('/', function ($request, $response, $args) {
+        $response->getBody()->write("Welcome to Toubilib API!\nRead the README.md file for more information.");
+        return $response;
+    });
     
     // Praticiens
     $app->get('/praticiens', ListerPraticiensAction::class)->add(AuthnMiddleware::class);
