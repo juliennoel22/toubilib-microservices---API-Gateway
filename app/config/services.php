@@ -18,6 +18,8 @@ use toubilib\core\application\ports\api\ServiceRendezVousInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\RendezVousRepositoryInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\UserRepositoryInterface;
 use toubilib\core\application\usecases\AuthnService;
+use toubilib\core\application\usecases\AuthzPraticienService;
+use toubilib\core\application\usecases\AuthzRendezVousService;
 use toubilib\infra\repositories\PDOPraticienRepository;
 use toubilib\core\application\usecases\ServicePraticien;
 use toubilib\core\application\usecases\ServiceRendezVous;
@@ -131,7 +133,7 @@ return [
 
     // Services d'autorisation
     AuthzPraticienServiceInterface::class => function ($c) {
-        return new AuthzPraticienServiceInterface(
+        return new AuthzPraticienService(
             $c->get(PraticienRepositoryInterface::class)
         );
     },
@@ -141,7 +143,7 @@ return [
     },
     
     AuthzRDVServiceInterface::class => function ($c) {
-        return new AuthzRDVServiceInterface(
+        return new AuthzRendezVousService(
             $c->get(RendezVousRepositoryInterface::class)
         );
     },

@@ -28,7 +28,7 @@ return function(\Slim\App $app): \Slim\App {
     $app->post('/auth/refresh', RefreshTokenAction::class);
     
     // Praticiens
-    $app->get('/praticiens', ListerPraticiensAction::class);
+    $app->get('/praticiens', ListerPraticiensAction::class)->add(AuthnMiddleware::class);
     $app->get('/praticiens/{id}', ListerPraticienIdAction::class);
     $app->get('/praticiens/villes/{ville}', RecherchePraticiensActionVille::class);
     $app->get('/praticiens/specialites/{specialite}', RecherchePraticiensActionSpecialite::class);
