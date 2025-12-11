@@ -116,9 +116,8 @@ return function(\Slim\App $app): \Slim\App {
         ->add(AuthnMiddleware::class);
 
     // Patients
-    $app->get('/patients/{id}/historique', GetHistoriquePatientAction::class);
-        // ->add(AuthnMiddleware::class);
-    // NE PAS OUBLIER DE RAJOUTER LE MIDDLE WARE !
+    $app->get('/patients/{id}/historique', GetHistoriquePatientAction::class)
+        ->add(AuthnMiddleware::class);
 
     
     return $app;
