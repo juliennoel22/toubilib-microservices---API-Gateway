@@ -660,4 +660,11 @@ INSERT INTO "structure" ("id", "nom", "adresse", "ville", "code_postal", "teleph
 ('55ee31cb-9fb6-3513-b209-e2804d02c11e',	'Fischer Médecins, Ruiz',	'83, place de Lefort',	'Ruiz',	'64 320',	'04 82 25 25 25'),
 ('e65145bb-ce57-4320-b0a8-6c0ba06def6d',	'Radio Plus',	'1 rue de la santé',	'Nancy',	'54 000',	'03 43 56 65 54');
 
+
+INSERT INTO "indisponibilite" ("id", "praticien_id", "date_debut", "date_fin", "motif", "type", "date_creation") VALUES
+('a1b2c3d4-e5f6-7890-abcd-ef1234567890',	'4305f5e9-be5a-4ccf-8792-7e07d7017363',	'2025-12-20 09:00:00',	'2025-12-20 17:00:00',	'Formation médicale continue',	'formation',	'2025-12-10 08:30:00'),
+('b2c3d4e5-f678-9012-bcde-f12345678901',	'4305f5e9-be5a-4ccf-8792-7e07d7017363',	'2025-12-25 00:00:00',	'2025-12-26 23:59:59',	'Congés de Noël',	'conge',	'2025-12-01 10:15:00'),
+('c3d4e5f6-7890-1234-cdef-123456789012',	'4305f5e9-be5a-4ccf-8792-7e07d7017363',	'2026-01-01 00:00:00',	'2026-01-01 23:59:59',	'Congés',	'conge',	'2025-12-01 10:15:00'),
+('d4e5f678-9012-3456-def1-234567890123',	'4305f5e9-be5a-4ccf-8792-7e07d7017363',	'2025-12-15 08:00:00',	'2025-12-15 18:00:00',	'Maintenance équipement IRM',	'maintenance',	'2025-12-05 14:20:00'),
+('e5f67890-1234-5678-ef12-345678901234',	'4305f5e9-be5a-4ccf-8792-7e07d7017363',	'2026-02-10 14:00:00',	'2026-02-14 18:00:00',	'Congés d hiver',	'conge',	'2025-12-01 16:45:00');
 -- 2025-06-30 12:31:50.244805+00

@@ -18,7 +18,14 @@ use toubilib\core\application\ports\api\ServicePraticienInterface;
 use toubilib\core\application\ports\api\ServiceRendezVousInterface;
 use toubilib\api\actions\SigninAction;
 use toubilib\api\actions\RefreshTokenAction;
+use toubilib\api\actions\RegisterPatientAction;
 use toubilib\api\provider\AuthProviderInterface;
+use toubilib\core\application\ports\api\ServicePatientInterface;
+use toubilib\api\actions\CreerIndisponibiliteAction;
+use toubilib\api\actions\ListerIndisponibilitesAction;
+use toubilib\api\actions\SupprimerIndisponibiliteAction;
+use toubilib\core\application\ports\api\ServiceIndisponibiliteInterface;
+
 
 return [
     ListerPraticiensAction::class => function ($c) {
@@ -108,6 +115,28 @@ return [
     RecherchePraticiensActionSpecialite::class => function ($c) {
         return new RecherchePraticiensActionSpecialite(
             $c->get(ServicePraticienInterface::class)
+        );
+    },
+    RegisterPatientAction::class => function ($c) {
+        return new RegisterPatientAction(
+            $c->get(ServicePatientInterface::class)
+        );
+    },
+    CreerIndisponibiliteAction::class => function ($c) {
+        return new CreerIndisponibiliteAction(
+            $c->get(ServiceIndisponibiliteInterface::class)
+        );
+    },
+
+    ListerIndisponibilitesAction::class => function ($c) {
+        return new ListerIndisponibilitesAction(
+            $c->get(ServiceIndisponibiliteInterface::class)
+        );
+    },
+
+    SupprimerIndisponibiliteAction::class => function ($c) {
+        return new SupprimerIndisponibiliteAction(
+            $c->get(ServiceIndisponibiliteInterface::class)
         );
     },
 ];

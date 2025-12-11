@@ -17,33 +17,53 @@ use toubilib\api\actions\RecherchePraticiensActionVille;
 use toubilib\api\middlewares\ValidationRendezVousMiddleware;
 use toubilib\api\actions\SigninAction;
 use toubilib\api\actions\RefreshTokenAction;
+use toubilib\api\actions\RegisterPatientAction;
 use toubilib\api\middlewares\AuthnMiddleware;
 use toubilib\api\middlewares\AuthzPraticienMiddleware;
 use toubilib\api\middlewares\AuthzRendezVousMiddleware;
+use toubilib\api\actions\CreerIndisponibiliteAction;
+use toubilib\api\actions\ListerIndisponibilitesAction;
+use toubilib\api\actions\SupprimerIndisponibiliteAction;
 
 return function(\Slim\App $app): \Slim\App {
 
     // Auth routes
     $app->post('/auth/signin', SigninAction::class);
     $app->post('/auth/refresh', RefreshTokenAction::class);
+    $app->post('/patient/register', RegisterPatientAction::class);
 
+    // Page d'accueil
     $app->get('/', function ($request, $response, $args) {
         $response->getBody()->write("Welcome to Toubilib API!\nRead the README.md file for more information.");
         return $response;
     });
     
     // Praticiens
-    $app->get('/praticiens', ListerPraticiensAction::class)->add(AuthnMiddleware::class);
+    $app->get('/praticiens', ListerPraticiensAction::class);
     $app->get('/praticiens/{id}', ListerPraticienIdAction::class);
     $app->get('/praticiens/villes/{ville}', RecherchePraticiensActionVille::class);
     $app->get('/praticiens/specialites/{specialite}', RecherchePraticiensActionSpecialite::class);
 
+    // Indisponibilites
+    $app->get('/praticiens/{id}/indisponibilites', ListerIndisponibilitesAction::class)
+    ->add(AuthzPraticienMiddleware::class)
+    ->add(AuthnMiddleware::class);
 
+    $app->post('/praticiens/{id}/indisponibilites', CreerIndisponibiliteAction::class)
+    ->add(AuthzPraticienMiddleware::class)
+    ->add(AuthnMiddleware::class);
 
+    $app->delete('/praticiens/{id}/indisponibilites/{indispo_id}', SupprimerIndisponibiliteAction::class)
+    ->add(AuthzPraticienMiddleware::class)
+    ->add(AuthnMiddleware::class);
+
+    // Agenda
     $app->get('/praticiens/{id}/agenda', ConsulterAgendaAction::class)
         ->add(AuthzPraticienMiddleware::class)
         ->add(AuthnMiddleware::class);
+
     // Rdvs
+
     // $app->get('/rdvs', ListerRendezVousAction::class)
 
     $app->get('/rdvs/{id}', ConsulterRendezVousAction::class)
@@ -68,6 +88,8 @@ return function(\Slim\App $app): \Slim\App {
         ->add(AuthzRendezVousMiddleware::class)
         ->add(AuthnMiddleware::class);
 
+
+    // Creneaux Praticien
     $app->get('/praticiens/{id}/creneaux', ListerCreneauxOccAction::class); 
     
     return $app;

@@ -24,5 +24,4 @@ CREATE TABLE "public"."patient" (
     "telephone" character varying(24) NOT NULL
 ) WITH (oids = false);
 
-
 -- 2025-06-30 12:29:55.790373+00

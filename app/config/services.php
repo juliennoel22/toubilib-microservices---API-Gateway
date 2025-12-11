@@ -12,19 +12,28 @@ use toubilib\core\application\ports\api\AuthnServiceInterface;
 use toubilib\core\application\ports\api\AuthzPatientServiceInterface;
 use toubilib\core\application\ports\api\AuthzPraticienServiceInterface;
 use toubilib\core\application\ports\api\AuthzRDVServiceInterface;
+use toubilib\core\application\ports\api\ServicePatientInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\PraticienRepositoryInterface;
 use toubilib\core\application\ports\api\ServicePraticienInterface;
 use toubilib\core\application\ports\api\ServiceRendezVousInterface;
+use toubilib\core\application\ports\spi\repositoryInterfaces\PatientRepositoryInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\RendezVousRepositoryInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\UserRepositoryInterface;
 use toubilib\core\application\usecases\AuthnService;
 use toubilib\core\application\usecases\AuthzPraticienService;
 use toubilib\core\application\usecases\AuthzRendezVousService;
+use toubilib\core\application\usecases\ServicePatient;
 use toubilib\infra\repositories\PDOPraticienRepository;
 use toubilib\core\application\usecases\ServicePraticien;
 use toubilib\core\application\usecases\ServiceRendezVous;
+use toubilib\infra\repositories\PDOPatientRepository;
 use toubilib\infra\repositories\PDORendezVousRepository;
 use toubilib\infra\repositories\UserRepository;
+use toubilib\core\application\ports\spi\repositoryInterfaces\IndisponibiliteRepositoryInterface;
+use toubilib\core\application\ports\api\ServiceIndisponibiliteInterface;
+use toubilib\core\application\usecases\ServiceIndisponibilite;
+use toubilib\infra\repositories\PDOIndisponibiliteRepository;
+
 
 return [
     // Connexion PDO
@@ -75,6 +84,22 @@ return [
 
         return new PDO($dsn, $user, $pass);
     },
+
+    'patient_db' => static function ($c): PDO {
+    $dbConfig = $c->get('settings')['db_patient'];
+    $driver  = $dbConfig['driver'] ?? 'pgsql';
+    $host    = $dbConfig['host'] ?? 'toubipat.db';
+    $dbname  = $dbConfig['dbname'] ?? 'toubipat';
+    $user    = $dbConfig['username'] ?? 'toubipat';
+    $pass    = $dbConfig['password'] ?? 'toubipat';
+    $charset = $dbConfig['charset'] ?? 'utf8mb4';
+
+    $dsn = $driver === 'mysql'
+        ? "mysql:host={$host};dbname={$dbname};charset={$charset}"
+        : "pgsql:host={$host};dbname={$dbname}";
+
+    return new PDO($dsn, $user, $pass);
+},
     
     // Repositories
     PraticienRepositoryInterface::class => function ($c) {
@@ -171,4 +196,21 @@ return [
     CorsMiddleware::class => function ($c) {
         return new CorsMiddleware();
     },
+    PatientRepositoryInterface::class => function ($c) {
+    return new PDOPatientRepository($c->get('patient_db'));
+},
+ServicePatientInterface::class => function ($c) {
+    return new ServicePatient(
+        $c->get(PatientRepositoryInterface::class),
+        $c->get(UserRepositoryInterface::class)
+    );
+},
+IndisponibiliteRepositoryInterface::class => function ($c) {
+    return new PDOIndisponibiliteRepository($c->get('praticien_db'));
+},
+ServiceIndisponibiliteInterface::class => function ($c) {
+    return new ServiceIndisponibilite(
+        $c->get(IndisponibiliteRepositoryInterface::class)
+    );
+},
 ];
