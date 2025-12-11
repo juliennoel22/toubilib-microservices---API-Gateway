@@ -12,4 +12,5 @@ interface RendezVousRepositoryInterface
     public function findById(string $id): RendezVous;
     public function update(RendezVous $rdv): void;
     public function findByPraticienAndPeriode(string $praticienId, string $dateDebut, string $dateFin): array;
+    public function getRdvsByPatient(string $patientId): array;
 }

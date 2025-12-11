@@ -14,6 +14,7 @@ use toubilib\api\actions\ListerRendezVousActionID;
 use toubilib\api\actions\NePasHonorerRendezVousAction;
 use toubilib\api\actions\RecherchePraticiensActionSpecialite;
 use toubilib\api\actions\RecherchePraticiensActionVille;
+use toubilib\api\actions\GetHistoriquePatientAction;
 use toubilib\api\middlewares\ValidationRendezVousMiddleware;
 use toubilib\api\actions\SigninAction;
 use toubilib\api\actions\RefreshTokenAction;
@@ -63,9 +64,10 @@ return function(\Slim\App $app): \Slim\App {
         $html .= "<a href='/praticiens/specialites/Dentiste'>/praticiens/specialites/Dentiste</a></li>";
 
         $html .= "<li>✅ 10. Gérer le cycle de vie (Honoré/Non honoré)<br>";
-        $html .= "PATCH /rdvs/{id}/honorer</li>";
-
-        $html .= "<li>❌ 11. Historique des consultations d’un patient<br>";
+        $html .= "PATCH /rdvs/{id}/honorer</li>";        
+        $html .= "<li>✅ 11. Historique des consultations d’un patient<br>";
+        $html .= "GET /patients/{id}/historique (Auth requise)</li>";
+        $html .= "<a href='/patients/d975aca7-50c5-3d16-b211-cf7d302cba50/historique'>/patients/{id}/historique</a></li>";
 
         $html .= "<li>❌ 12. S’inscrire en tant que patient<br>";
 
@@ -113,6 +115,10 @@ return function(\Slim\App $app): \Slim\App {
         ->add(AuthzRendezVousMiddleware::class)
         ->add(AuthnMiddleware::class);
 
+    // Patients
+    $app->get('/patients/{id}/historique', GetHistoriquePatientAction::class);
+        // ->add(AuthnMiddleware::class);
+    // NE PAS OUBLIER DE RAJOUTER LE MIDDLE WARE !
 
     
     return $app;
