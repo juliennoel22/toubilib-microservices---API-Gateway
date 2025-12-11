@@ -193,4 +193,43 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface
 
         return $rdvs;
     }
+
+    public function getRdvsByPatient(string $patientId): array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT r.id, r.praticien_id, r.patient_id, r.patient_email, r.date_heure_debut,
+            r.status, r.duree, r.date_heure_fin, r.date_creation, r.motif_visite
+            FROM rdv r 
+            WHERE r.patient_id = :patient_id
+            ORDER BY r.date_heure_debut DESC"
+        );
+
+        $stmt->execute(['patient_id' => $patientId]);
+        
+        $results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $rdvs = [];
+
+        foreach ($results as $rt) {
+            try {
+                $praticien = $this->praticien_interface->findPraticienId($rt['praticien_id']);
+            } catch (Exception $e) {
+                $praticien = new Praticien($rt['praticien_id'], 'Inconnu', '', '', '', new Specialite('', '', ''));
+            }
+
+            $rdvs[] = new RendezVous(
+                $rt['id'],
+                $praticien,
+                $rt['patient_id'],
+                $rt['patient_email'] ?? '',
+                $rt['date_heure_debut'],
+                $rt['status'],
+                $rt['duree'],
+                $rt['date_heure_fin'],
+                $rt['date_creation'],
+                $rt['motif_visite']
+            );
+        }
+
+        return $rdvs;
+    }
 }

@@ -265,4 +265,25 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         return $creneauxOccupes;
     }
+
+    public function getHistoriquePatient(string $patientId): array
+    {
+        $rdvs = $this->rendezVousRepository->getRdvsByPatient($patientId);
+        $result = [];
+        foreach ($rdvs as $rdv) {
+            $result[] = new RendezVousDTOID(
+                $rdv->getId(),
+                $rdv->getPraticien()->getId(),
+                $rdv->getPatientId(),
+                $rdv->getPatientEmail(),
+                $rdv->getStatus(),
+                (int)$rdv->getDuree(),        
+                $rdv->getDateHD(),          
+                $rdv->getDateHF(),
+                $rdv->getDateC(),
+                $rdv->getMotifVisite()
+            );
+        }
+        return $result;
+    }
 }
