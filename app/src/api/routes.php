@@ -29,9 +29,9 @@ use toubilib\api\actions\SupprimerIndisponibiliteAction;
 return function(\Slim\App $app): \Slim\App {
 
     // Auth routes
-    $app->post('/auth/signin', SigninAction::class);
-    $app->post('/auth/refresh', RefreshTokenAction::class);
-    $app->post('/patient/register', RegisterPatientAction::class);
+    // $app->post('/auth/signin', SigninAction::class);
+    // $app->post('/auth/refresh', RefreshTokenAction::class);
+    // $app->post('/patient/register', RegisterPatientAction::class);
 
     // Page d'accueil
     $app->get('/', function ($request, $response, $args) {

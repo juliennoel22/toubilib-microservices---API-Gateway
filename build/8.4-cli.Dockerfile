@@ -14,6 +14,7 @@ RUN curl -sSLf \
 
 # PHP Configuration
 RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+RUN sh -""
 RUN install-php-extensions  gettext iconv intl  tidy zip sockets
 RUN install-php-extensions  pgsql mysqli
 RUN install-php-extensions  pdo_mysql pdo_pgsql
