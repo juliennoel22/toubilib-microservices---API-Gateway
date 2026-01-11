@@ -8,50 +8,50 @@ Ce fichier répertorie l'état d'avancement des fonctionnalités (Sujet 1 à 13)
   - *Route :* `/praticiens`
   - *Action :* `ListerPraticiensAction`
 
-- [❌] **2. Afficher le détail d’un praticien**
+- [✅] **2. Afficher le détail d’un praticien**
   - *État :* **[!] Bug**
   - *Route :* `/praticiens/{id}`
   - *Action :* `ListerPraticienIdAction`
 
-- [❌] **3. Lister les créneaux de rdvs déjà occupés**
+- [✅] **3. Lister les créneaux de rdvs déjà occupés**
   - *État :* **[!] Bug**
   - *Détail :* La route `/praticiens/{id}/creneaux` existe mais le fichier est mal nommé (`ListerCreneauxOccActions.php` vs classe `Single`). **À corriger.**
 
-- [❌] **4. Consulter un rendez-vous**
+- [✅] **4. Consulter un rendez-vous**
   - *Route :* `/rdvs/{id}`
   - *Action :* `ConsulterRendezVousAction`
 
-- [❌] **5. Réserver un rendez-vous**
+- [✅] **5. Réserver un rendez-vous**
   - *Route :* `POST /rdvs`
   - *Action :* `CreerRendezVousAction`
 
-- [❌] **6. Annuler un rendez-vous**
+- [✅] **6. Annuler un rendez-vous**
   - *Route :* `PATCH /rdvs/{id}/annuler`
 
-- [❌] **7. Afficher l’agenda d’un praticien**
+- [✅] **7. Afficher l’agenda d’un praticien**
   - *Route :* `/praticiens/{id}/agenda` (Affiche aussi motif/patient)
 
-- [❌] **8. S’authentifier (Patient/Praticien)**
+- [✅] **8. S’authentifier (Patient/Praticien)**
   - *Route :* `/auth/signin`
   - *Support :* Authentification JWT opérationnelle.
 
 ## Fonctionnalités Additionnelles
 
-- [❌] **9. Rechercher un praticien (Spécialité/Ville)**
+- [✅] **9. Rechercher un praticien (Spécialité/Ville)**
   - *Routes :* `/praticiens/villes/{ville}` et `/praticiens/specialites/{specialite}`
 
-- [❌] **10. Gérer le cycle de vie (Honoré/Non honoré)**
+- [✅] **10. Gérer le cycle de vie (Honoré/Non honoré)**
   - *Routes :* `PATCH /rdvs/{id}/honorer` et `.../ne-pas-honorer`
 
-- [❌] **11. Historique des consultations d’un patient**
+- [✅] **11. Historique des consultations d’un patient**
   - *État :* **À Vérifier**
   - *Détail :* Pas de route explicite pour l'historique *patient*. Voir si `/rdvs` filtré suffit ou s'il manque une implémentation.
 
-- [❌] **12. S’inscrire en tant que patient**
+- [✅] **12. S’inscrire en tant que patient**
   - *État :* **À faire**
   - *Détail :* Code "WIP" dans `JwtAuthProvider::register`. Aucune route définie.
 
-- [❌] **13. Gérer les indisponibilités temporaires**
+- [✅] **13. Gérer les indisponibilités temporaires**
   - *État :* **Manquant**
   - *Détail :* Aucune trace dans le code.
 
