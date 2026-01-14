@@ -65,7 +65,10 @@ class RoutedProxyAction
                 ->withStatus($e->getResponse()->getStatusCode());
                 
         } catch (ServerException $e) {
-            throw new HttpInternalServerErrorException($request, "Internal server error from upstream service");
+            $response->getBody()->write((string) $e->getResponse()->getBody());
+            return $response
+                ->withHeader('Content-Type', 'application/json')
+                ->withStatus($e->getResponse()->getStatusCode());
         }
     }
 }

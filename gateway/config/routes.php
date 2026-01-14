@@ -20,19 +20,19 @@ return function (App $app): App {
     });
     
     $app->get('/praticiens/{id}/rdvs', function ($request, $response, $args) use ($container) {
-        $action = new RoutedProxyAction($container, 'praticiens.client');
+        $action = new RoutedProxyAction($container, 'rdv.client');
         return $action($request, $response, $args);
     });
     
     $app->get('/praticiens/{id}/agenda', function ($request, $response, $args) use ($container) {
-        $action = new RoutedProxyAction($container, 'praticiens.client');
+        $action = new RoutedProxyAction($container, 'rdv.client');
         return $action($request, $response, $args);
     })->add(new AuthMiddleware($container->get('auth.client')));
     
     $app->get('/praticiens/{id}/creneaux', function ($request, $response, $args) use ($container) {
-        $action = new RoutedProxyAction($container, 'praticiens.client');
+        $action = new RoutedProxyAction($container, 'rdv.client');
         return $action($request, $response, $args);
-    });
+    })->add(new AuthMiddleware($container->get('auth.client')));
     
     $app->get('/praticiens/villes/{ville}', function ($request, $response, $args) use ($container) {
         $action = new RoutedProxyAction($container, 'praticiens.client');
