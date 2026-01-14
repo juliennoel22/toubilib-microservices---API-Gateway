@@ -19,12 +19,15 @@ use toubilib\core\application\ports\api\ServiceRendezVousInterface;
 use toubilib\api\actions\SigninAction;
 use toubilib\api\actions\RefreshTokenAction;
 use toubilib\api\actions\RegisterPatientAction;
-use toubilib\api\provider\AuthProviderInterface;
 use toubilib\core\application\ports\api\ServicePatientInterface;
 use toubilib\api\actions\CreerIndisponibiliteAction;
 use toubilib\api\actions\ListerIndisponibilitesAction;
 use toubilib\api\actions\SupprimerIndisponibiliteAction;
 use toubilib\core\application\ports\api\ServiceIndisponibiliteInterface;
+use toubilib\api\provider\AuthProviderInterface;
+use toubilib\api\middlewares\AuthzRendezVousMiddleware;
+use toubilib\api\provider\jwt\JwtManagerInterface;
+use toubilib\core\application\ports\api\AuthzRDVServiceInterface;
 
 
 return [
@@ -137,6 +140,12 @@ return [
     SupprimerIndisponibiliteAction::class => function ($c) {
         return new SupprimerIndisponibiliteAction(
             $c->get(ServiceIndisponibiliteInterface::class)
+        );
+    },
+    
+    AuthzRendezVousMiddleware::class => function ($c) {
+        return new AuthzRendezVousMiddleware(
+            $c->get(AuthzRDVServiceInterface::class)
         );
     },
 ];

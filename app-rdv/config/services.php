@@ -33,7 +33,7 @@ use toubilib\core\application\ports\spi\repositoryInterfaces\IndisponibiliteRepo
 use toubilib\core\application\ports\api\ServiceIndisponibiliteInterface;
 use toubilib\core\application\usecases\ServiceIndisponibilite;
 use toubilib\infra\repositories\PDOIndisponibiliteRepository;
-use toubilib\core\infrastructure\adapters\RemotePraticienRepository;
+use toubilib\infra\adapters\RemotePraticienRepository;
 use GuzzleHttp\Client;
 
 
@@ -103,7 +103,6 @@ return [
     return new PDO($dsn, $user, $pass);
 },
     
-    // Client Guzzle pour interroger le microservice praticiens
     'praticiens.api.client' => function () {
         return new Client([
             'base_uri' => 'http://api.praticiens/',
@@ -113,11 +112,7 @@ return [
     
     // Repositories
     PraticienRepositoryInterface::class => function ($c) {
-        // Utiliser l'adaptateur distant au lieu du repository PDO
         return new RemotePraticienRepository($c->get('praticiens.api.client'));
-        
-        // Ancienne implémentation (locale) :
-        // return new PDOPraticienRepository($c->get('praticien_db'));
     },
     
     RendezVousRepositoryInterface::class => function ($a) {

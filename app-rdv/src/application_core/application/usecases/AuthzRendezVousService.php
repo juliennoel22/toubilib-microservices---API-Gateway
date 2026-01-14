@@ -24,7 +24,12 @@ class AuthzRendezVousService implements AuthzRDVServiceInterface{
     public function isGranted(string $user_id, string $role, string $ressource_id, int $operation=1): bool {
         $roleInt = (int)$role;
         
-        $rdv = $this->rdvRepository->findById($ressource_id);
+        try {
+            $rdv = $this->rdvRepository->findById($ressource_id);
+        } catch (Exception $e) {
+            throw new Exception("Erreur: Ressource introuvable");
+        }
+        
         if (!$rdv) {
             throw new Exception("Erreur: Ressource introuvable");
         }

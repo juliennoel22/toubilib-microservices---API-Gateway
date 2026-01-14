@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace toubilib\core\infrastructure\adapters;
+namespace toubilib\infra\adapters;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;

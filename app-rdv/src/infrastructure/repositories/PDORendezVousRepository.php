@@ -61,7 +61,14 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface
 
         $rdvs = [];
         foreach ($results as $rt) {
-            $pdopraticien = $this->praticien_interface->findPraticienId($rt['praticien_id']);
+            if (empty($rt['praticien_id'])) {
+                continue;
+            }
+            try {
+                $pdopraticien = $this->praticien_interface->findPraticienId($rt['praticien_id']);
+            } catch (Exception $e) {
+                continue;
+            }
             $rdvs[] = new RendezVous(
                 $rt['id'],
                 $pdopraticien,
@@ -110,6 +117,10 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface
         );
         $stmt->execute(['id' => $id]);
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (!$result) {
+            throw new \Exception("Rendez-vous not found with id: " . $id);
+        }
 
         $praticien = $this->praticien_interface->findPraticienId($result['praticien_id']);
 
@@ -176,7 +187,14 @@ class PDORendezVousRepository implements RendezVousRepositoryInterface
         $rdvs = [];
 
         foreach ($results as $rt) {
-            $praticien = $this->praticien_interface->findPraticienId($rt['praticien_id']);
+            if (empty($rt['praticien_id'])) {
+                continue;
+            }
+            try {
+                $praticien = $this->praticien_interface->findPraticienId($rt['praticien_id']);
+            } catch (Exception $e) {
+                continue;
+            }
             $rdvs[] = new RendezVous(
                 $rt['id'],
                 $praticien,

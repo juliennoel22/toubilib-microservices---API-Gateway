@@ -155,7 +155,11 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function annulerRendezVous(string $idRdv): void
     {
-        $rdv = $this->rendezVousRepository->findById($idRdv);
+        try {
+            $rdv = $this->rendezVousRepository->findById($idRdv);
+        } catch (Exception $e) {
+            throw new Exception("Rendez-vous introuvable");
+        }
 
         if ($rdv === null) {
             throw new Exception("Rendez-vous introuvable");
@@ -167,7 +171,11 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
     public function HonorerRDV(string $idRdv): void
     {
-        $rdv = $this->rendezVousRepository->findById($idRdv);
+        try {
+            $rdv = $this->rendezVousRepository->findById($idRdv);
+        } catch (Exception $e) {
+            throw new Exception("Rendez-vous introuvable");
+        }
 
         if ($rdv === null) {
             throw new Exception("Rendez-vous introuvable");
@@ -179,7 +187,11 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
     public function NePasHonorerRDV(string $idRdv): void
     {
-        $rdv = $this->rendezVousRepository->findById($idRdv);
+        try {
+            $rdv = $this->rendezVousRepository->findById($idRdv);
+        } catch (Exception $e) {
+            throw new Exception("Rendez-vous introuvable");
+        }
 
         if ($rdv === null) {
             throw new Exception("Rendez-vous introuvable");
@@ -222,7 +234,11 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
     public function consulterRendezVous(string $idRdv): ?RendezVousDTOID
 {
-    $rdv = $this->rendezVousRepository->findById($idRdv);
+    try {
+        $rdv = $this->rendezVousRepository->findById($idRdv);
+    } catch (Exception $e) {
+        return null;
+    }
     
     if ($rdv === null) {
         return null;
