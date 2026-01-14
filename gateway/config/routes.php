@@ -1,8 +1,8 @@
 <?php
-declare(strict_types=1);
-
 use Slim\App;
 use toubilib\gateway\actions\RoutedProxyAction;
+use toubilib\gateway\actions\AuthenticatedProxyAction;
+use toubilib\gateway\middlewares\AuthMiddleware;
 use Psr\Container\ContainerInterface;
 
 return function (App $app): App {
@@ -27,7 +27,7 @@ return function (App $app): App {
     $app->get('/praticiens/{id}/agenda', function ($request, $response, $args) use ($container) {
         $action = new RoutedProxyAction($container, 'praticiens.client');
         return $action($request, $response, $args);
-    });
+    })->add(new AuthMiddleware($container->get('auth.client')));
     
     $app->get('/praticiens/{id}/creneaux', function ($request, $response, $args) use ($container) {
         $action = new RoutedProxyAction($container, 'praticiens.client');
@@ -73,12 +73,13 @@ return function (App $app): App {
     $app->get('/rdvs/{id}', function ($request, $response, $args) use ($container) {
         $action = new RoutedProxyAction($container, 'rdv.client');
         return $action($request, $response, $args);
-    });
+    })->add(new AuthMiddleware($container->get('auth.client')));
     
     $app->post('/rdvs', function ($request, $response, $args) use ($container) {
         $action = new RoutedProxyAction($container, 'rdv.client');
         return $action($request, $response, $args);
-    });
+    })->add(new AuthMiddleware($container->get('auth.client')));
+
     
     $app->patch('/rdvs/{id}', function ($request, $response, $args) use ($container) {
         $action = new RoutedProxyAction($container, 'rdv.client');
@@ -101,17 +102,17 @@ return function (App $app): App {
     });
 
     $app->post('/auth/signin', function ($request, $response, $args) use ($container) {
-        $action = new RoutedProxyAction($container, 'rdv.client');
+        $action = new RoutedProxyAction($container, 'auth.client');
         return $action($request, $response, $args);
     });
     
     $app->post('/auth/signup', function ($request, $response, $args) use ($container) {
-        $action = new RoutedProxyAction($container, 'rdv.client');
+        $action = new RoutedProxyAction($container, 'auth.client');
         return $action($request, $response, $args);
     });
     
     $app->post('/auth/refresh', function ($request, $response, $args) use ($container) {
-        $action = new RoutedProxyAction($container, 'rdv.client');
+        $action = new RoutedProxyAction($container, 'auth.client');
         return $action($request, $response, $args);
     });
 

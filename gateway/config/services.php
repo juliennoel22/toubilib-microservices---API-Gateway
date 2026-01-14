@@ -15,15 +15,14 @@ return [
             'base_uri' => 'http://api.rdv/',
         ]);
     },
-    
+    'auth.client' => function (ContainerInterface $c) {
+        return new Client([
+            'base_uri' => 'http://api.auth/',
+        ]);
+    },
     Client::class => function (ContainerInterface $c) {
         return new Client([
             'base_uri' => 'http://api.toubilib/',
-        ]);
-    },
-        Client::class => function (ContainerInterface $c) {
-        return new Client([
-            'base_uri' => 'http://api.auth/',
         ]);
     },
 ];
