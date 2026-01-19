@@ -85,15 +85,15 @@ return function(\Slim\App $app): \Slim\App {
     });
 
     // Indisponibilites
-    $app->get('/praticiens/{id}/indisponibilites', ListerIndisponibilitesAction::class);
+    // $app->get('/praticiens/{id}/indisponibilites', ListerIndisponibilitesAction::class);
     // ->add(AuthzPraticienMiddleware::class)
     // ->add(AuthnMiddleware::class);
 
-    $app->post('/praticiens/{id}/indisponibilites', CreerIndisponibiliteAction::class);
+    // $app->post('/praticiens/{id}/indisponibilites', CreerIndisponibiliteAction::class);
     // ->add(AuthzPraticienMiddleware::class)
     // ->add(AuthnMiddleware::class);
 
-    $app->delete('/praticiens/{id}/indisponibilites/{indispo_id}', SupprimerIndisponibiliteAction::class);
+    // $app->delete('/praticiens/{id}/indisponibilites/{indispo_id}', SupprimerIndisponibiliteAction::class);
     // ->add(AuthzPraticienMiddleware::class)
     // ->add(AuthnMiddleware::class);
 
@@ -101,6 +101,9 @@ return function(\Slim\App $app): \Slim\App {
     $app->get('/praticiens/{id}/agenda', ConsulterAgendaAction::class)
         ->add(AuthzPraticienMiddleware::class)
         ->add(AuthnMiddleware::class);
+
+    // Créneaux occupés
+    $app->get('/praticiens/{id}/creneaux', ListerCreneauxOccAction::class);
 
     // Rdvs
 

@@ -19,6 +19,8 @@ services:
     depends_on:
       - api.praticiens
       - api.rdv
+      - api.auth
+      - api.toubilib
     command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
 
   # service api.praticiens : microservice pour les praticiens
@@ -36,8 +38,25 @@ services:
       - toubilib.net
     depends_on:
       - toubiprati.db
+    command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
+  # service api auth : microservice pour les authentification
+  #
+  api.auth:
+    build:
+      context: build
+      dockerfile: 8.4-cli.Dockerfile
+    ports:
+      - '6085:80'
+    volumes:
+      - ./app-auth:/var/php
+    working_dir: /var/php
+    networks:
+      - toubilib.net
+    depends_on:
       - toubiauth.db
     command: sh -c "composer install && php -S 0.0.0.0:80 -t /var/php/public"
+
 
   # service api.rdv : microservice pour les rendez-vous
   #
@@ -82,7 +101,7 @@ services:
     image: 'postgres:latest'
     env_file: ./toubipratdb.env
     ports:
-      - '5432:5432'
+      - '5439:5432'
     networks:
       - toubilib.net
     volumes:
@@ -136,4 +155,35 @@ services:
       - '8080:8080'
     networks:
       - toubilib.net
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    #    build:
+    #      context: build
+    #      dockerfile: rabbit-stomp.Dockerfile
+    ports:
+      - '15672:15672'
+      #      - '15674:15674'
+      - '5672:5672'
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 8s
+      timeout: 30s
+      retries: 3
+    networks:
+      - toubilib.net
+    volumes:
+      - ./rabbitmq.toubi:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=toubi
+      - RABBITMQ_DEFAULT_PASS=toubi
+
+  mail.toubi:
+    build:
+      context: build
+      dockerfile: mailcatcher.Dockerfile
+    networks:
+      - toubilib.net
+    ports:
+      - '1080:1080'
 

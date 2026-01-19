@@ -202,7 +202,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         $this->rendezVousRepository->update($rdv);
     }
 
-    public function consulterAgenda(string $praticienId, string $dateDebut, string $dateFin): array
+    public function consulterAgenda(string $praticienId, ?string $dateDebut, ?string $dateFin): array
 {
     if ($dateDebut === null) {
         $dateDebut = (new \DateTime())->format('Y-m-d 00:00:00');
