@@ -197,6 +197,13 @@ services:
     networks:
       - toubilib.net
     depends_on:
-      - rabbitmq
-    command: sh -c "composer install && php consumer.php"
+      rabbitmq:
+        condition: service_healthy
+      mail.toubi:
+        condition: service_started
+    environment:
+      - SMTP_HOST=mail.toubi
+      - SMTP_PORT=1025
+    restart: on-failure
+    command: sh -c "composer install && sleep 5 && php consumer.php"
 
