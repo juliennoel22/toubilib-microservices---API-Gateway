@@ -1,0 +1,16 @@
+{
+  "name": "toubilib/gateway",
+  "description": "API Gateway for Toubilib",
+  "type": "project",
+  "autoload": {
+    "psr-4": {
+      "toubilib\\gateway\\": "src/"
+    }
+  },
+  "require": {
+    "slim/slim": "^4.0",
+    "slim/psr7": "^1.0",
+    "php-di/php-di": "^7.0",
+    "guzzlehttp/guzzle": "^7.0"
+  }
+}

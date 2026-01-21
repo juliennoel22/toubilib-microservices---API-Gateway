@@ -1,0 +1,16 @@
+meta {
+  name: Agenda Praticien
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/praticiens/{{praticienId}}/agenda?date_debut=2025-12-01&date_fin=2025-12-31
+  body: none
+  auth: none
+}
+
+params:query {
+  date_debut: 2025-12-01
+  date_fin: 2025-12-31
+}
