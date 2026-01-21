@@ -35,6 +35,7 @@ use toubilib\core\application\usecases\ServiceIndisponibilite;
 use toubilib\infra\repositories\PDOIndisponibiliteRepository;
 use toubilib\infra\adapters\RemotePraticienRepository;
 use GuzzleHttp\Client;
+use toubilib\infrastructure\messaging\EventPublisher;
 
 
 return [
@@ -149,6 +150,10 @@ return [
             $c->get(RendezVousRepositoryInterface::class),
             $c->get(PraticienRepositoryInterface::class) 
         );
+    },
+    
+    EventPublisher::class => function () {
+        return new EventPublisher('rabbitmq', 5672, 'toubi', 'toubi', 'toubilib_events');
     },
     
     AuthnServiceInterface::class => function ($c) {

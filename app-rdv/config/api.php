@@ -63,7 +63,8 @@ return [
     
     CreerRendezVousAction::class => function ($c) {
         return new CreerRendezVousAction(
-            $c->get(ServiceRendezVousInterface::class)
+            $c->get(ServiceRendezVousInterface::class),
+            $c->get(\toubilib\infrastructure\messaging\EventPublisher::class)
         );
     },
     
