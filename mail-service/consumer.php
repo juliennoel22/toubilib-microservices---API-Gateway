@@ -13,20 +13,18 @@ $channel = $connection->channel();
 echo "[*] En attente de messages. CTRL+C pour quitter.\n";
 
 $callback = function(AMQPMessage $msg) {
-    $msg_body = json_decode($msg->body, true);
+    $data = json_decode($msg->getBody(), true);
     
-    echo "\n[x] Message reçu:\n";
-    echo "Event Type: " . $msg_body['event_type'] . "\n";
-    echo "RDV ID: " . $msg_body['rdv_id'] . "\n";
-    echo "Praticien ID: " . $msg_body['praticien_id'] . "\n";
-    echo "Patient ID: " . $msg_body['patient_id'] . "\n";
-    echo "Date: " . $msg_body['date_heure'] . "\n";
-    echo "Durée: " . $msg_body['duree'] . " minutes\n";
-    echo "Destinataires: " . count($msg_body['destinataires']) . "\n";
-    echo json_encode($msg_body, JSON_PRETTY_PRINT) . "\n";
+    if (!$data) {
+        echo "[X] Invalid message format\n";
+        $msg->getChannel()->basic_nack($msg->getDeliveryTag(), false, false);
+        return;
+    }
+    
+    echo "\n[x] {$data['event_type']} - RDV {$data['rdv_id']} - {$data['date_heure']}\n";
     
     $msg->getChannel()->basic_ack($msg->getDeliveryTag());
-    echo "[✓] Message traité\n";
+    echo "[>] Traité\n";
 };
 
 $channel->basic_consume($queue, '', false, false, false, false, $callback);

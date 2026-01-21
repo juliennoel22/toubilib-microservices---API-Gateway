@@ -28,7 +28,7 @@ use toubilib\api\provider\AuthProviderInterface;
 use toubilib\api\middlewares\AuthzRendezVousMiddleware;
 use toubilib\api\provider\jwt\JwtManagerInterface;
 use toubilib\core\application\ports\api\AuthzRDVServiceInterface;
-
+use toubilib\infra\messaging\EventPublisher;
 
 return [
     ListerPraticiensAction::class => function ($c) {
@@ -64,7 +64,7 @@ return [
     CreerRendezVousAction::class => function ($c) {
         return new CreerRendezVousAction(
             $c->get(ServiceRendezVousInterface::class),
-            $c->get(\toubilib\infrastructure\messaging\EventPublisher::class)
+            $c->get(EventPublisher::class)
         );
     },
     

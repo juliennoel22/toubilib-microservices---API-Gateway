@@ -6,7 +6,7 @@ use Exception;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use toubilib\core\application\ports\api\ServiceRendezVousInterface;
-use toubilib\infrastructure\messaging\EventPublisher;
+use toubilib\infra\messaging\EventPublisher;
 
 class CreerRendezVousAction
 {

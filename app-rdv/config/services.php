@@ -35,7 +35,7 @@ use toubilib\core\application\usecases\ServiceIndisponibilite;
 use toubilib\infra\repositories\PDOIndisponibiliteRepository;
 use toubilib\infra\adapters\RemotePraticienRepository;
 use GuzzleHttp\Client;
-use toubilib\infrastructure\messaging\EventPublisher;
+use toubilib\infra\messaging\EventPublisher;
 
 
 return [

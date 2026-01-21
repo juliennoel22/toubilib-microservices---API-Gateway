@@ -1,6 +1,6 @@
 <?php
 
-namespace toubilib\infrastructure\messaging;
+namespace toubilib\infra\messaging;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
