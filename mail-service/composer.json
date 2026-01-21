@@ -1,0 +1,12 @@
+{
+  "name": "toubilib/mail-service",
+  "require": {
+    "php": ">=8.2",
+    "php-amqplib/php-amqplib": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "toubilib\\mail\\": "src/"
+    }
+  }
+}
