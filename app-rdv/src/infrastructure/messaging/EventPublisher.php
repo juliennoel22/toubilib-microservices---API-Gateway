@@ -27,7 +27,19 @@ class EventPublisher
         $connection = new AMQPStreamConnection($this->host, $this->port, $this->user, $this->password);
         $channel = $connection->channel();
 
-        $msg = new AMQPMessage(json_encode($eventData));
+        $channel->exchange_declare(
+            $this->exchange,  
+            'topic',          
+            false,            
+            true,            
+            false            
+        );
+
+        $msg = new AMQPMessage(
+            json_encode($eventData),
+            ['delivery_mode' => 2] 
+        );
+        
         $channel->basic_publish($msg, $this->exchange, $routingKey);
 
         $channel->close();

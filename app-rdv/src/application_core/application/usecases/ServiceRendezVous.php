@@ -111,7 +111,7 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         return new RendezVousDTO(
             $rdvSaved->getId(),
             $rdvSaved->getPraticien()->getNom(),
-            "http://localhost:6080/prat/id/" . $rdvSaved->getPraticien()->getId(),
+            "http://localhost:6080/praticiens/" . $rdvSaved->getPraticien()->getId(),
             $rdvSaved->getPatientId(),
             $rdvSaved->getStatus(),
             $rdvSaved->getDuree(),

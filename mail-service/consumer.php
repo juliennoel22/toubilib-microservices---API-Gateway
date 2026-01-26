@@ -15,11 +15,34 @@ $dsn = "smtp://{$smtpHost}:{$smtpPort}";
 $transport = Transport::fromDsn($dsn);
 $mailer = new Mailer($transport);
 
+$exchange = 'toubilib_events';
 $queue = 'rdv_notifications';
 
 $connection = new AMQPStreamConnection('rabbitmq', 5672, 'toubi', 'toubi');
 $channel = $connection->channel();
 
+// exchange
+$channel->exchange_declare(
+    $exchange,    
+    'topic',      
+    false,      
+    true,       
+    false        
+);
+
+//  queue
+$channel->queue_declare(
+    $queue,      
+    false,       
+    true,       
+    false,      
+    false     
+);
+
+$channel->queue_bind($queue, $exchange, 'rdv.create');
+$channel->queue_bind($queue, $exchange, 'rdv.cancel');
+
+echo "[*] Exchange '$exchange' et queue '$queue' configurés\n";
 echo "[*] En attente de messages. CTRL+C pour quitter.\n";
 
 $callback = function(AMQPMessage $msg) use ($mailer) {
