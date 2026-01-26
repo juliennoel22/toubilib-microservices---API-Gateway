@@ -6,38 +6,40 @@ use Psr\Http\Message\ResponseInterface;
 use toubilib\api\provider\AuthProviderInterface;
 use toubilib\core\application\ports\api\CredentialsDTO;
 
-class SigninAction {
+class SigninAction
+{
     private AuthProviderInterface $authProvider;
 
-    public function __construct(AuthProviderInterface $authProvider) {
+    public function __construct(AuthProviderInterface $authProvider)
+    {
         $this->authProvider = $authProvider;
     }
 
     public function __invoke(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
-        
+
         $data = $request->getParsedBody();
-        
+
         // Validation des données
         if (!isset($data['email']) || !isset($data['password'])) {
             $error = [
                 'type' => 'error',
                 'error' => 400,
-                'message' => 'Email and password are required'
+                'message' => 'Email et mot de passe sont requis'
             ];
             $response->getBody()->write(json_encode($error));
             return $response
                 ->withStatus(400)
                 ->withHeader('Content-Type', 'application/json');
         }
-        
+
         $credentials = new CredentialsDTO($data['email'], $data['password']);
-        
+
         try {
             $authDTO = $this->authProvider->signin($credentials);
-            
+
             $result = [
                 'type' => 'success',
                 'user' => [
@@ -48,12 +50,12 @@ class SigninAction {
                 'access_token' => $authDTO->access_token,
                 'refresh_token' => $authDTO->refresh_token
             ];
-            
+
             $response->getBody()->write(json_encode($result));
             return $response
                 ->withStatus(200)
                 ->withHeader('Content-Type', 'application/json');
-                
+
         } catch (\Exception $e) {
             $error = [
                 'type' => 'error',

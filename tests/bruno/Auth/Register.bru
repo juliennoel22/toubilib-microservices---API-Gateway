@@ -1,0 +1,25 @@
+meta {
+  name: Register
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:6081/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nom": "Dupont",
+    "prenom": "Jean",
+    "date_naissance": "1990-01-01",
+    "adresse": "10 rue de la Paix",
+    "code_postal": "75000",
+    "ville": "Paris",
+    "email": "jean.dupont@example.com",
+    "telephone": "0601020304",
+    "password": "password123"
+  }
+}

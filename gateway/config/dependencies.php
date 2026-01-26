@@ -40,4 +40,24 @@ return [
             $c->get('client.rdv')
         );
     },
+
+    'client.auth' => function (ContainerInterface $c) {
+        $settings = $c->get('settings');
+        return new Client([
+            'base_uri' => $settings['auth_api'],
+            'timeout'  => 5.0,
+        ]);
+    },
+
+    \toubilib\gateway\Action\Auth\AuthAction::class => function (ContainerInterface $c) {
+        return new \toubilib\gateway\Action\Auth\AuthAction(
+            $c->get('client.auth')
+        );
+    },
+
+    \toubilib\gateway\Middleware\GatewayAuthMiddleware::class => function (ContainerInterface $c) {
+        return new \toubilib\gateway\Middleware\GatewayAuthMiddleware(
+            $c->get('client.auth')
+        );
+    },
 ];

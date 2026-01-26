@@ -9,17 +9,23 @@ return function (App $app) {
         return $response;
     });
 
+
+    // Routes Authentification
+    $app->post('/auth/signin', \toubilib\gateway\Action\Auth\AuthAction::class);
+    $app->post('/auth/register', \toubilib\gateway\Action\Auth\AuthAction::class);
+    $app->post('/auth/refresh', \toubilib\gateway\Action\Auth\AuthAction::class);
+
     $app->get('/praticiens', \toubilib\gateway\Action\Praticien\PraticienAction::class);
     $app->get('/praticiens/{id}', \toubilib\gateway\Action\Praticien\PraticienAction::class);
-    $app->get('/praticiens/{id}/rdvs', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
-    
-    // Autres routes RDV
-    $app->get('/rdvs', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
-    $app->get('/rdvs/{id}', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
-    $app->post('/rdvs', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
-    $app->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/rdvs/{routes:.+}', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
 
-    // Routes mixtes (Praticien -> RDV)
-    $app->get('/praticiens/{id}/agenda', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
-    $app->get('/praticiens/{id}/creneaux', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+    // Routes Rendez-vous avec Middleware d'Authentification
+    $app->group('', function ($group) {
+        $group->get('/praticiens/{id}/rdvs', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+        $group->get('/rdvs', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+        $group->get('/rdvs/{id}', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+        $group->post('/rdvs', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+        $group->map(['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], '/rdvs/{routes:.+}', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+        $group->get('/praticiens/{id}/agenda', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+        $group->get('/praticiens/{id}/creneaux', \toubilib\gateway\Action\RendezVous\RendezVousAction::class);
+    })->add(\toubilib\gateway\Middleware\GatewayAuthMiddleware::class);
 };

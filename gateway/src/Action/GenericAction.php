@@ -31,27 +31,31 @@ class GenericAction
             $uri .= '?' . $query;
         }
 
-        try {
-            $options = [];
-            if ($request->getBody()->getSize() > 0) {
-                 $options['body'] = $request->getBody()->getContents(); 
-            }
+        // Transfert des headers
+        $headers = $request->getHeaders();
+        unset($headers['Host']);
+        unset($headers['Content-Length']);
 
-            // Guzzle Request
+        $options = [
+            'headers' => $headers,
+            'http_errors' => false,
+        ];
+
+        // Transfert du corps de la requête
+        $contents = (string) $request->getBody();
+        if (!empty($contents)) {
+            $options['body'] = $contents;
+        }
+
+        try {
             $apiResponse = $this->client->request($method, $uri, $options);
 
-            // Guzzle response implements PSR-7 ResponseInterface, so it is compatible with Slim
             return $apiResponse;
 
-        } catch (ClientException $e) {
-            if ($e->getResponse()->getStatusCode() == 404) {
-                throw new HttpNotFoundException($request, "Ressource inexistante");
-            }
-            throw $e;
         } catch (ConnectException $e) {
             throw new HttpInternalServerErrorException($request, "Service unavailable !", $e);
         } catch (ServerException $e) {
-             throw new HttpInternalServerErrorException($request, "Upstream server error", $e);
+            throw new HttpInternalServerErrorException($request, "Upstream server error", $e);
         }
     }
 }

@@ -36,21 +36,21 @@ return function(\Slim\App $app): \Slim\App {
     // Rdvs
     $app->get('/rdvs', ListerRendezVousAction::class);
 
-    $app->get('/rdvs/{id}', ConsulterRendezVousAction::class);
-       // ->add(AuthzRendezVousMiddleware::class);
-       // ->add(AuthnMiddleware::class); // Middleware Auth désactivé pour simplifier ou à configurer si auth service externe
+    $app->get('/rdvs/{id}', ConsulterRendezVousAction::class)
+        ->add(AuthzRendezVousMiddleware::class);
+    // ->add(AuthnMiddleware::class); // Middleware Auth désactivé pour simplifier ou à configurer si auth service externe
 
     $app->post('/rdvs', CreerRendezVousAction::class)
         ->add(ValidationRendezVousMiddleware::class);
-    
-    $app->patch('/rdvs/{id}/annuler', AnnulerRendezVousAction::class);
-         //->add(AuthzRendezVousMiddleware::class);
 
-    $app->patch('/rdvs/{id}/honorer', HonorerRendezVousAction::class);
-        //->add(AuthzRendezVousMiddleware::class);
+    $app->patch('/rdvs/{id}/annuler', AnnulerRendezVousAction::class)
+        ->add(AuthzRendezVousMiddleware::class);
 
-    $app->patch('/rdvs/{id}/ne-pas-honorer', NePasHonorerRendezVousAction::class);
-        //->add(AuthzRendezVousMiddleware::class);
-    
+    $app->patch('/rdvs/{id}/honorer', HonorerRendezVousAction::class)
+        ->add(AuthzRendezVousMiddleware::class);
+
+    $app->patch('/rdvs/{id}/ne-pas-honorer', NePasHonorerRendezVousAction::class)
+        ->add(AuthzRendezVousMiddleware::class);
+
     return $app;
 };

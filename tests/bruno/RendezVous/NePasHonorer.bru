@@ -7,5 +7,9 @@ meta {
 patch {
   url: {{baseUrl}}/rdvs/{{rdvId}}/ne-pas-honorer
   body: none
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
 }

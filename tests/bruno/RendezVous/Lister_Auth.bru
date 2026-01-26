@@ -1,0 +1,15 @@
+meta {
+  name: Lister (Auth)
+  type: http
+  seq: 10
+}
+
+get {
+  url: http://localhost:6081/rdvs
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

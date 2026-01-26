@@ -76,27 +76,6 @@ return [
         );
     },
     
-    SigninAction::class => function ($c) {
-        return new SigninAction(
-            $c->get(AuthProviderInterface::class)
-        );
-    },
-    
-    RefreshTokenAction::class => function ($c) {
-        return new RefreshTokenAction(
-            $c->get(AuthProviderInterface::class)
-        );
-    },
-    ConsulterRendezVousAction::class => function ($c) {
-        return new ConsulterRendezVousAction(
-            $c->get(ServiceRendezVousInterface::class)
-        );
-    },
-    HonorerRendezVousAction::class => function ($c) {
-        return new HonorerRendezVousAction(
-            $c->get(ServiceRendezVousInterface::class)
-        );
-    },
     NePasHonorerRendezVousAction::class => function ($c) {
         return new NePasHonorerRendezVousAction(
             $c->get(ServiceRendezVousInterface::class)
