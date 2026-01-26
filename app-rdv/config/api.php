@@ -70,7 +70,8 @@ return [
     
     AnnulerRendezVousAction::class => function ($c) {
         return new AnnulerRendezVousAction(
-            $c->get(ServiceRendezVousInterface::class)
+            $c->get(ServiceRendezVousInterface::class),
+            $c->get(EventPublisher::class)
         );
     },
     
