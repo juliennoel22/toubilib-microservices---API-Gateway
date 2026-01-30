@@ -49,12 +49,18 @@ return [
             $a->get(PraticienRepositoryInterface::class)
         );
     },
-    
-    // Services
+
+    // Messaging
+    \toubilib\core\application\ports\spi\EventDispatcherInterface::class => function ($c) {
+        return new \toubilib\infra\messaging\RabbitMqEventDispatcher();
+    },
+
+        // Services
     ServiceRendezVousInterface::class => function ($c) {
         return new ServiceRendezVous(
             $c->get(RendezVousRepositoryInterface::class),
-            $c->get(PraticienRepositoryInterface::class) 
+            $c->get(PraticienRepositoryInterface::class),
+            $c->get(\toubilib\core\application\ports\spi\EventDispatcherInterface::class)
         );
     },
     

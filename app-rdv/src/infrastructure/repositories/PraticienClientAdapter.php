@@ -52,15 +52,12 @@ class PraticienClientAdapter implements PraticienRepositoryInterface
     public function findPraticienId(string $id_p): Praticien
     {
         if (isset($this->cache[$id_p])) {
-            // error_log("Adapter: Cache hit for " . $id_p);
             return $this->cache[$id_p];
         }
 
         try {
-            // error_log("Adapter: requesting /praticiens/" . $id_p);
             $response = $this->client->get('/praticiens/' . $id_p);
             $body = $response->getBody()->getContents();
-            // error_log("Adapter: response: " . $body);
             $data = json_decode($body, true);
             
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -72,13 +69,11 @@ class PraticienClientAdapter implements PraticienRepositoryInterface
                  error_log("Adapter: Data is not array");
                  throw new Exception("Data invalid");
             }
-            
-            // error_log("Adapter: Data parsed. Creating objects.");
 
             try {
                 $specialite = new Specialite(
-                    $data['specialite_id'] ?? 'unknown', 
-                    $data['specialite_lib'] ?? '', 
+                    $data['specialite_id'] ?? 'unknown',
+                    $data['specialite_lib'] ?? '',
                     $data['specialite_desc'] ?? ''
                 );
 
@@ -90,7 +85,6 @@ class PraticienClientAdapter implements PraticienRepositoryInterface
                     $data['email'],
                     $specialite
                 );
-                // error_log("Adapter: Praticien created.");
                 $this->cache[$id_p] = $praticien;
                 return $praticien;
             } catch (\Throwable $e) { // Catch Error and Exception

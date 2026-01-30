@@ -9,6 +9,7 @@ use toubilib\core\application\ports\api\RendezVousDTOID;
 use toubilib\core\application\ports\api\ServiceRendezVousInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\PraticienRepositoryInterface;
 use toubilib\core\application\ports\spi\repositoryInterfaces\RendezVousRepositoryInterface;
+use toubilib\core\application\ports\spi\EventDispatcherInterface;
 use toubilib\core\domain\entities\praticien\RendezVous;
 use Ramsey\Uuid\Uuid;
 
@@ -17,13 +18,16 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 {
     private RendezVousRepositoryInterface $rendezVousRepository;
     private PraticienRepositoryInterface $praticienRepository;
+    private EventDispatcherInterface $eventDispatcher;
 
     public function __construct(
         RendezVousRepositoryInterface $rendezVousRepository,
-        PraticienRepositoryInterface $praticienRepository
+        PraticienRepositoryInterface $praticienRepository,
+        EventDispatcherInterface $eventDispatcher
     ) {
         $this->rendezVousRepository = $rendezVousRepository;
         $this->praticienRepository = $praticienRepository;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function ListerRendezVous(): array
@@ -37,9 +41,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 $element->getPraticien()->getNom(),
                 $lien . "/" . $element->getPraticien()->getId(),
                 $element->getPatientId(),
-                $element->getPatientEmail(),
-                $element->getStatus(),
-                $element->getDuree(),
+                (string) $element->getStatus(), // Status
+                (string) $element->getDuree(),
                 $element->getDateHF(),
                 $element->getDateC(),
                 $element->getMotifVisite()
@@ -61,9 +64,9 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                     $element->getPraticien()->getId(),
                     $element->getPatientId(),
                     $element->getPatientEmail(),
-                    (string)$element->getStatus(),
-                    (string)$element->getDuree(),        
-                    $element->getDateHD(),           
+                    (string) $element->getStatus(),
+                    (string) $element->getDuree(),
+                    $element->getDateHD(),
                     $element->getDateHF(),
                     $element->getDateC(),
                     $element->getMotifVisite()
@@ -104,10 +107,10 @@ class ServiceRendezVous implements ServiceRendezVousInterface
             $uuid,
             $praticien,
             $dto->patient_id,
-            '', 
+            '',
             $dateDebut->format('Y-m-d H:i:s'),
             1,
-            (string)$dto->duree,
+            (string) $dto->duree,
             $dateFin->format('Y-m-d H:i:s'),
             (new \DateTime())->format('Y-m-d H:i:s'),
             $dto->motif_visite
@@ -116,6 +119,15 @@ class ServiceRendezVous implements ServiceRendezVousInterface
 
         $rdvSaved = $this->rendezVousRepository->save($rdv);
 
+        // Envoi de l'événement
+        $this->eventDispatcher->dispatch('rdv.created', [
+            'id' => $rdvSaved->getId(),
+            'praticien_id' => $rdvSaved->getPraticien()->getId(),
+            'patient_id' => $rdvSaved->getPatientId(),
+            'date_heure' => $rdvSaved->getDateHD(),
+            'motif' => $rdvSaved->getMotifVisite(),
+            'email_patient' => $rdvSaved->getPatientEmail()
+        ]);
 
         return new RendezVousDTO(
             $rdvSaved->getId(),
@@ -133,8 +145,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     private function validerCreneauHoraire(string $dateHeure): void
     {
         $date = new \DateTime($dateHeure);
-        $jourSemaine = (int)$date->format('N');
-        $heure = (int)$date->format('H');
+        $jourSemaine = (int) $date->format('N');
+        $heure = (int) $date->format('H');
 
         if ($jourSemaine < 1 || $jourSemaine > 5) {
             throw new Exception("Le rendez-vous doit être pris en semaine (lundi-vendredi)");
@@ -173,6 +185,15 @@ class ServiceRendezVous implements ServiceRendezVousInterface
         $rdv->annuler();
 
         $this->rendezVousRepository->update($rdv);
+
+        // Envoi de l'événement
+        $this->eventDispatcher->dispatch('rdv.cancelled', [
+            'id' => $rdv->getId(),
+            'praticien_id' => $rdv->getPraticien()->getId(),
+            'patient_id' => $rdv->getPatientId(),
+            'date_heure' => $rdv->getDateHD(),
+            'email_patient' => $rdv->getPatientEmail()
+        ]);
     }
     public function HonorerRDV(string $idRdv): void
     {
@@ -200,57 +221,57 @@ class ServiceRendezVous implements ServiceRendezVousInterface
     }
 
     public function consulterAgenda(string $praticienId, ?string $dateDebut, ?string $dateFin): array
-{
-    if ($dateDebut === null) {
-        $dateDebut = (new \DateTime())->format('Y-m-d 00:00:00');
-    }
-    if ($dateFin === null) {
-        $dateFin = (new \DateTime())->format('Y-m-d 23:59:59');
+    {
+        if ($dateDebut === null) {
+            $dateDebut = (new \DateTime())->format('Y-m-d 00:00:00');
+        }
+        if ($dateFin === null) {
+            $dateFin = (new \DateTime())->format('Y-m-d 23:59:59');
+        }
+
+        $rdvs = $this->rendezVousRepository->findByPraticienAndPeriode($praticienId, $dateDebut, $dateFin);
+
+        $result = [];
+        foreach ($rdvs as $rdv) {
+            $result[] = new RendezVousDTOID(
+                $rdv->getId(),
+                $rdv->getPraticien()->getId(),
+                $rdv->getPatientId(),
+                $rdv->getPatientEmail(),
+                $rdv->getStatus(),
+                (int) $rdv->getDuree(),
+                $rdv->getDateHD(),
+                $rdv->getDateHF(),
+                $rdv->getDateC(),
+                $rdv->getMotifVisite()
+            );
+        }
+
+        return $result;
     }
 
-    $rdvs = $this->rendezVousRepository->findByPraticienAndPeriode($praticienId, $dateDebut, $dateFin);
+    public function consulterRendezVous(string $idRdv): ?RendezVousDTOID
+    {
+        $rdv = $this->rendezVousRepository->findById($idRdv);
 
-    $result = [];
-    foreach ($rdvs as $rdv) {
-        $result[] = new RendezVousDTOID(
+        if ($rdv === null) {
+            return null;
+        }
+
+        return new RendezVousDTOID(
             $rdv->getId(),
             $rdv->getPraticien()->getId(),
             $rdv->getPatientId(),
             $rdv->getPatientEmail(),
             $rdv->getStatus(),
-            (int)$rdv->getDuree(),        
-            $rdv->getDateHD(),          
+            (int) $rdv->getDuree(),
+            $rdv->getDateHD(),
             $rdv->getDateHF(),
             $rdv->getDateC(),
             $rdv->getMotifVisite()
         );
     }
-
-    return $result;
-}
-
-    public function consulterRendezVous(string $idRdv): ?RendezVousDTOID
-{
-    $rdv = $this->rendezVousRepository->findById($idRdv);
-    
-    if ($rdv === null) {
-        return null;
-    }
-    
-    return new RendezVousDTOID(
-        $rdv->getId(),
-        $rdv->getPraticien()->getId(),
-        $rdv->getPatientId(),
-        $rdv->getPatientEmail(),
-        $rdv->getStatus(),                    
-        (int)$rdv->getDuree(),                
-        $rdv->getDateHD(),                   
-        $rdv->getDateHF(),
-        $rdv->getDateC(),
-        $rdv->getMotifVisite()
-    );
-}
- public function listerCreneauxOccupes(string $praticienId, ?string $dateDebut = null, ?string $dateFin = null): array
+    public function listerCreneauxOccupes(string $praticienId, ?string $dateDebut = null, ?string $dateFin = null): array
     {
         if ($dateDebut === null) {
             $dateDebut = (new \DateTime())->format('Y-m-d 00:00:00');
@@ -286,8 +307,8 @@ class ServiceRendezVous implements ServiceRendezVousInterface
                 $rdv->getPatientId(),
                 $rdv->getPatientEmail(),
                 $rdv->getStatus(),
-                (int)$rdv->getDuree(),        
-                $rdv->getDateHD(),          
+                (int) $rdv->getDuree(),
+                $rdv->getDateHD(),
                 $rdv->getDateHF(),
                 $rdv->getDateC(),
                 $rdv->getMotifVisite()

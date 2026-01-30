@@ -1,0 +1,6 @@
+Démarrage du consommateur de mails...
+ [*] En attente de messages dans 'toubi.mails'.
+ [x] Reçu : {"event":"rdv.created","data":{"id":"79bf81c5-2d4f-4a0a-9859-e2ff7791ea1f","praticien_id":"4305f5e9-be5a-4ccf-8792-7e07d7017363","patient_id":"dbe402d1-f353-491e-94bc-ece35360f149","date_heure":"2026-12-02 17:00:00","motif":"Consultation Nouveau","email_patient":""},"timestamp":"2026-01-30 10:26:16"}
+ [v] Email (created) envoyé à patient@example.com
+ [x] Reçu : {"event":"rdv.cancelled","data":{"id":"79bf81c5-2d4f-4a0a-9859-e2ff7791ea1f","praticien_id":"4305f5e9-be5a-4ccf-8792-7e07d7017363","patient_id":"dbe402d1-f353-491e-94bc-ece35360f149","date_heure":"2026-12-02 17:00:00","email_patient":""},"timestamp":"2026-01-30 11:16:26"}
+ [v] Email (cancelled) envoyé à patient@example.com

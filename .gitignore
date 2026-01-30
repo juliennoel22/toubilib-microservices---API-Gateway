@@ -24,3 +24,7 @@ composer.lock
 */vendor
 /vendor/*
 */vendor/*
+
+
+rabbitmq.toubi
+/docs
