@@ -130,3 +130,7 @@ L'API exposes les points de terminaisons suivants. Certaines routes nécessitent
 
 - **API** : Accessible via [http://localhost:6080](http://localhost:6080).
 - **Adminer** (Gestion BDD) : Accessible via [http://localhost:8080](http://localhost:8080).
+
+---
+
+- [Julien NOEL](https://github.com/juliennoel22) <img src="https://juliennoel.fr/icon.png" alt="Logo Julien NOEL" height="20" width="20" />
